@@ -19,19 +19,33 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
-// NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+type Priority string
+
+const (
+	// PriorityUrgent means do this right away
+	PriorityUrgent = Priority("Urgent")
+
+	// PriorityUrgent means do this immediately
+	PriorityExtremelyUrgent = Priority("ExtremelyUrgent")
+
+	// PriorityBusinessCritical means you absolutely need to do this now
+	PriorityBusinessCritical = Priority("BusinessCritical")
+)
 
 // MailgunClusterSpec defines the desired state of MailgunCluster
 type MailgunClusterSpec struct {
-	// INSERT ADDITIONAL SPEC FIELDS - desired state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// Priority is how quickly you need this cluster
+	Priority Priority `json:"priority"`
+	// Request is where you ask extra nicely
+	Request string `json:"request"`
+	// Requester is the email of the person sending the request
+	Requester string
 }
 
 // MailgunClusterStatus defines the observed state of MailgunCluster
 type MailgunClusterStatus struct {
-	// INSERT ADDITIONAL STATUS FIELD - define observed state of cluster
-	// Important: Run "make" to regenerate code after modifying this file
+	// MessageID is set to the message ID from Mailgun when our message has been sent
+	MessageID *string `json:"response"`
 }
 
 // +kubebuilder:object:root=true
