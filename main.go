@@ -19,6 +19,8 @@ import (
 	"flag"
 	"os"
 
+	infrastructurev1alpha3 "github.com/liztio/cluster-api-provider-mailgun/api/v1alpha3"
+	"github.com/liztio/cluster-api-provider-mailgun/controllers"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
@@ -35,6 +37,7 @@ var (
 func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 
+	_ = infrastructurev1alpha3.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -58,6 +61,20 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err = (&controllers.MailgunClusterReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("MailgunCluster"),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "MailgunCluster")
+		os.Exit(1)
+	}
+	if err = (&controllers.MailgunMachineReconciler{
+		Client: mgr.GetClient(),
+		Log:    ctrl.Log.WithName("controllers").WithName("MailgunMachine"),
+	}).SetupWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create controller", "controller", "MailgunMachine")
+		os.Exit(1)
+	}
 	// +kubebuilder:scaffold:builder
 
 	setupLog.Info("starting manager")
