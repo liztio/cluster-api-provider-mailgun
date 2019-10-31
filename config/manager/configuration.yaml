@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: mailgun-config
+  namespace: system
+type: Opaque
+data:
+  api_key: ${MAILGUN_API_KEY}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mailgun-config
+  namespace: system
+data:
+  mailgun_domain: ${MAILGUN_DOMAIN}
+  mail_recipient: ${MAILGUN_RECIPIENT}

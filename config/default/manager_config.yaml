@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-manager
+  namespace: system
+spec:
+  template:
+    spec:
+      containers:
+      - name: manager
+      env: 
+      - key: MAILGUN_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: mailgun-secret
+            key: api_key
+      - key: MAILGUN_DOMAIN
+        valueFrom:
+          configMapRef:
+            name: mailgun-config
+            key: mailgun_domain
+      - key: MAIL_RECIPIENT
+        valueFrom:
+          configMapRef:
+            name: mailgun-config
+            key: mail_recipient

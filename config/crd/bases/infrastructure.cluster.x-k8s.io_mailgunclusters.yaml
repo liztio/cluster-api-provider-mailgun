@@ -1,0 +1,63 @@
+
+---
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  creationTimestamp: null
+  name: mailgunclusters.infrastructure.cluster.x-k8s.io
+spec:
+  group: infrastructure.cluster.x-k8s.io
+  names:
+    kind: MailgunCluster
+    plural: mailgunclusters
+  scope: ""
+  validation:
+    openAPIV3Schema:
+      description: MailgunCluster is the Schema for the mailgunclusters API
+      properties:
+        apiVersion:
+          description: 'APIVersion defines the versioned schema of this representation
+            of an object. Servers should convert recognized schemas to the latest
+            internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#resources'
+          type: string
+        kind:
+          description: 'Kind is a string value representing the REST resource this
+            object represents. Servers may infer this from the endpoint the client
+            submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/api-conventions.md#types-kinds'
+          type: string
+        metadata:
+          type: object
+        spec:
+          description: MailgunClusterSpec defines the desired state of MailgunCluster
+          properties:
+            priority:
+              description: Priority is how quickly you need this cluster
+              type: string
+            request:
+              description: Request is where you ask extra nicely
+              type: string
+            requester:
+              description: Requester is the email of the person sending the request
+              type: string
+          type: object
+        status:
+          description: MailgunClusterStatus defines the observed state of MailgunCluster
+          properties:
+            response:
+              description: MessageID is set to the message ID from Mailgun when our
+                message has been sent
+              type: string
+          required:
+          - response
+          type: object
+      type: object
+  versions:
+  - name: v1alpha3
+    served: true
+    storage: true
+status:
+  acceptedNames:
+    kind: ""
+    plural: ""
+  conditions: []
+  storedVersions: []
