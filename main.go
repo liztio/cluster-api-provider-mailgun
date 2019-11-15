@@ -21,9 +21,11 @@ import (
 
 	infrastructurev1alpha3 "github.com/liztio/cluster-api-provider-mailgun/api/v1alpha3"
 	"github.com/liztio/cluster-api-provider-mailgun/controllers"
+	"github.com/mailgun/mailgun-go"
 	"k8s.io/apimachinery/pkg/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	_ "k8s.io/client-go/plugin/pkg/client/auth/gcp"
+	clusterv1 "sigs.k8s.io/cluster-api/api/v1alpha3"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	// +kubebuilder:scaffold:imports
@@ -37,6 +39,7 @@ var (
 func init() {
 	_ = clientgoscheme.AddToScheme(scheme)
 
+	_ = clusterv1.AddToScheme(scheme)
 	_ = infrastructurev1alpha3.AddToScheme(scheme)
 	// +kubebuilder:scaffold:scheme
 }
@@ -61,9 +64,31 @@ func main() {
 		os.Exit(1)
 	}
 
+	domain := os.Getenv("MAILGUN_DOMAIN")
+	if domain == "" {
+		setupLog.Info("missing required env MAILGUN_DOMAIN")
+		os.Exit(1)
+	}
+
+	apiKey := os.Getenv("MAILGUN_API_KEY")
+	if apiKey == "" {
+		setupLog.Info("missing required env MAILGUN_API_KEY")
+		os.Exit(1)
+	}
+
+	recipient := os.Getenv("MAIL_RECIPIENT")
+	if recipient == "" {
+		setupLog.Info("missing required env MAIL_RECIPIENT")
+		os.Exit(1)
+	}
+
+	mg := mailgun.NewMailgun(domain, apiKey)
+
 	if err = (&controllers.MailgunClusterReconciler{
-		Client: mgr.GetClient(),
-		Log:    ctrl.Log.WithName("controllers").WithName("MailgunCluster"),
+		Client:    mgr.GetClient(),
+		Log:       ctrl.Log.WithName("controllers").WithName("MailgunCluster"),
+		Mailgun:   mg,
+		Recipient: recipient,
 	}).SetupWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create controller", "controller", "MailgunCluster")
 		os.Exit(1)

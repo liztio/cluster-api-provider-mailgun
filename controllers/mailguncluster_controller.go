@@ -54,9 +54,13 @@ func (r *MailgunClusterReconciler) Reconcile(req ctrl.Request) (ctrl.Result, err
 		return ctrl.Result{}, err
 	}
 
-	cluster, err := util.GetOwnerMachine(ctx, r.Client, mgCluster.ObjectMeta)
+	cluster, err := util.GetOwnerCluster(ctx, r.Client, mgCluster.ObjectMeta)
 	if err != nil {
 		return ctrl.Result{}, err
+	}
+
+	if cluster == nil {
+		return ctrl.Result{}, fmt.Errorf("failed to retrieve cluster: %+v", mgCluster.ObjectMeta)
 	}
 
 	if mgCluster.Status.MessageID != nil {
@@ -64,8 +68,11 @@ func (r *MailgunClusterReconciler) Reconcile(req ctrl.Request) (ctrl.Result, err
 		return ctrl.Result{}, nil
 	}
 
+	if cluster == nil {
+	}
+
 	subject := fmt.Sprintf("[%s] New Cluster %s requested", mgCluster.Spec.Priority, cluster.Name)
-	body := fmt.Sprint("Hello! One cluster please.\n\n%s\n", mgCluster.Spec.Request)
+	body := fmt.Sprintf("Hello! One cluster please.\n\n%s\n", mgCluster.Spec.Request)
 
 	msg := mailgun.NewMessage(mgCluster.Spec.Requester, subject, body, r.Recipient)
 	_, msgID, err := r.Mailgun.Send(msg)

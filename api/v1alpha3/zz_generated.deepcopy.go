@@ -54,7 +54,7 @@ func (in *MailgunCluster) DeepCopyObject() runtime.Object {
 func (in *MailgunClusterList) DeepCopyInto(out *MailgunClusterList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]MailgunCluster, len(*in))
@@ -148,7 +148,7 @@ func (in *MailgunMachine) DeepCopyObject() runtime.Object {
 func (in *MailgunMachineList) DeepCopyInto(out *MailgunMachineList) {
 	*out = *in
 	out.TypeMeta = in.TypeMeta
-	out.ListMeta = in.ListMeta
+	in.ListMeta.DeepCopyInto(&out.ListMeta)
 	if in.Items != nil {
 		in, out := &in.Items, &out.Items
 		*out = make([]MailgunMachine, len(*in))

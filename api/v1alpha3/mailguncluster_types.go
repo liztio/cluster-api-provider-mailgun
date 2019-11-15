@@ -35,11 +35,11 @@ const (
 // MailgunClusterSpec defines the desired state of MailgunCluster
 type MailgunClusterSpec struct {
 	// Priority is how quickly you need this cluster
-	Priority Priority `json:"priority"`
+	Priority Priority `json:"priority,omitempty"`
 	// Request is where you ask extra nicely
-	Request string `json:"request"`
+	Request string `json:"request,omitempty"`
 	// Requester is the email of the person sending the request
-	Requester string
+	Requester string `json:"requester,omitempty"`
 }
 
 // MailgunClusterStatus defines the observed state of MailgunCluster
