@@ -8,19 +8,19 @@ spec:
     spec:
       containers:
       - name: manager
-      env: 
-      - key: MAILGUN_API_KEY
-        valueFrom:
-          secretKeyRef:
-            name: mailgun-secret
-            key: api_key
-      - key: MAILGUN_DOMAIN
-        valueFrom:
-          configMapRef:
-            name: mailgun-config
-            key: mailgun_domain
-      - key: MAIL_RECIPIENT
-        valueFrom:
-          configMapRef:
-            name: mailgun-config
-            key: mail_recipient
+        env: 
+        - name: MAILGUN_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: cluster-api-provider-mailgun-mailgun-config
+              key: api_key
+        - name: MAILGUN_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-api-provider-mailgun-mailgun-config
+              key: mailgun_domain
+        - name: MAIL_RECIPIENT
+          valueFrom:
+            configMapKeyRef:
+              name: cluster-api-provider-mailgun-mailgun-config
+              key: mail_recipient

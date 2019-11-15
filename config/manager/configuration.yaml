@@ -5,7 +5,7 @@ metadata:
   name: mailgun-config
   namespace: system
 type: Opaque
-data:
+stringData:
   api_key: ${MAILGUN_API_KEY}
 ---
 apiVersion: v1
